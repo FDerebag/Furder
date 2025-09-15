@@ -102,7 +102,7 @@ use Illuminate\Support\Facades\Storage;
         <div class="max-w-7xl mx-auto px-6 h-full">
             <div class="flex items-center justify-between h-full">
                 <div class="flex items-center">
-                    <img src="{{ asset('images/furderlogobeyaz.png') }}" alt="Furder Logo" class="h-10 md:h-12 w-auto object-contain transition-all duration-300 hover:scale-105 cursor-pointer" />
+                    <img src="{{ asset('images/furderlogobeyaz.png') }}?v={{ filemtime(public_path('images/furderlogobeyaz.png')) }}" alt="Furder Logo" class="h-10 md:h-12 w-auto object-contain transition-all duration-300 hover:scale-105 cursor-pointer" />
                 </div>
                 <div class="hidden md:flex space-x-8">
                     <a href="#home" class="text-lg font-medium hover:text-cyan-300 transition-colors duration-300 py-2 px-3 rounded-lg hover:bg-white/10">Ana Sayfa</a>
