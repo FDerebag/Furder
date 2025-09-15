@@ -1,8 +1,12 @@
+@php
+use Illuminate\Support\Facades\Storage;
+@endphp
 <!DOCTYPE html>
 <html lang="tr">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Furder Yazılım ve Teknoloji Hizmetleri | Kurumsal Yazılım Çözümleri</title>
     
     <!-- Favicon -->
@@ -15,6 +19,8 @@
     <meta name="theme-color" content="#0f0f23">
     
     <link href="https://fonts.bunny.net/css?family=inter:300,400,500,600,700,800,900" rel="stylesheet" />
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
         <!-- Vite yerine direkt CSS kullanıyoruz -->
         <script src="https://cdn.tailwindcss.com"></script>
     <style>
@@ -54,6 +60,23 @@
             border: 1px solid rgba(255, 255, 255, 0.1);
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
         }
+
+        .icon-container {
+            transition: all 0.3s ease;
+        }
+
+        .icon-container:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .icon-container i {
+            transition: all 0.3s ease;
+        }
+
+        .icon-container:hover i {
+            transform: scale(1.1);
+        }
         
         .glow-border {
             position: relative;
@@ -84,7 +107,7 @@
                 <div class="hidden md:flex space-x-8">
                     <a href="#home" class="text-lg font-medium hover:text-cyan-300 transition-colors duration-300 py-2 px-3 rounded-lg hover:bg-white/10">Ana Sayfa</a>
                     <a href="#about" class="text-lg font-medium hover:text-orange-300 transition-colors duration-300 py-2 px-3 rounded-lg hover:bg-white/10">Hakkımızda</a>
-                    <a href="#projects" class="text-lg font-medium hover:text-yellow-300 transition-colors duration-300 py-2 px-3 rounded-lg hover:bg-white/10">Referanslar</a>
+                    <a href="#projects" class="text-lg font-medium hover:text-yellow-300 transition-colors duration-300 py-2 px-3 rounded-lg hover:bg-white/10">Projeler</a>
                     <a href="#skills" class="text-lg font-medium hover:text-purple-300 transition-colors duration-300 py-2 px-3 rounded-lg hover:bg-white/10">Hizmetler</a>
                     <a href="#contact" class="text-lg font-medium hover:text-cyan-300 transition-colors duration-300 py-2 px-3 rounded-lg hover:bg-white/10">İletişim</a>
                 </div>
@@ -104,7 +127,7 @@
                 <div class="flex flex-col space-y-2 px-4 pb-4">
                     <a href="#home" class="text-lg font-medium hover:text-cyan-300 transition-colors duration-300 py-3 px-4 rounded-lg hover:bg-white/10">Ana Sayfa</a>
                     <a href="#about" class="text-lg font-medium hover:text-orange-300 transition-colors duration-300 py-3 px-4 rounded-lg hover:bg-white/10">Hakkımızda</a>
-                    <a href="#projects" class="text-lg font-medium hover:text-yellow-300 transition-colors duration-300 py-3 px-4 rounded-lg hover:bg-white/10">Referanslar</a>
+                    <a href="#projects" class="text-lg font-medium hover:text-yellow-300 transition-colors duration-300 py-3 px-4 rounded-lg hover:bg-white/10">Projeler</a>
                     <a href="#skills" class="text-lg font-medium hover:text-purple-300 transition-colors duration-300 py-3 px-4 rounded-lg hover:bg-white/10">Hizmetler</a>
                     <a href="#contact" class="text-lg font-medium hover:text-cyan-300 transition-colors duration-300 py-3 px-4 rounded-lg hover:bg-white/10">İletişim</a>
                 </div>
@@ -131,11 +154,11 @@
                 Ölçeklenebilir, güvenli ve performans odaklı çözümler ile kurumların dijital dönüşümüne güç katıyoruz.
             </p>
             <div class="flex flex-col sm:flex-row gap-6 justify-center items-center">
-                <button class="glow-border glass-effect px-8 py-4 rounded-full text-lg font-semibold hover:scale-105 transition-all duration-300 animate-pulse-glow">
-                    🚀 Hizmetlerimizi Keşfedin
+                <button onclick="scrollToProjects()" class="glow-border glass-effect px-8 py-4 rounded-full text-lg font-semibold hover:scale-105 transition-all duration-300 animate-pulse-glow">
+                    <i class="fas fa-rocket mr-2"></i>Hizmetlerimizi Keşfedin
                 </button>
                 <button onclick="openQuoteModal()" class="glass-effect px-8 py-4 rounded-full text-lg font-semibold hover:scale-105 transition-all duration-300 border border-white/30">
-                    💼 Teklif Alın
+                    <i class="fas fa-briefcase mr-2"></i>Teklif Alın
                 </button>
             </div>
         </div>
@@ -175,7 +198,9 @@
                 
                 <div class="relative">
                     <div class="glass-effect p-8 rounded-3xl animate-float">
-                        <div class="text-6xl mb-4">🎯</div>
+                        <div class="w-20 h-20 mx-auto mb-4 glass-effect rounded-full flex items-center justify-center icon-container">
+                            <i class="fas fa-bullseye text-3xl text-orange-400"></i>
+                        </div>
                         <h4 class="text-2xl font-bold mb-4 text-gradient">Misyonumuz</h4>
                         <p class="text-gray-200">
                             İş hedeflerinizi hızla hayata geçiren, sürdürülebilir ve ölçümlenebilir yazılım ürünleri geliştirerek rekabet avantajı sağlamanız.
@@ -201,7 +226,9 @@
             <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
                 <!-- Frontend -->
                 <div class="glass-effect p-6 rounded-2xl hover:scale-105 transition-all duration-500 glow-border">
-                    <div class="text-4xl mb-4">🎨</div>
+                    <div class="w-16 h-16 mx-auto mb-4 glass-effect rounded-full flex items-center justify-center icon-container">
+                        <i class="fas fa-palette text-2xl text-pink-400"></i>
+                    </div>
                     <h3 class="text-xl font-bold mb-3 text-gradient">Frontend</h3>
                     <div class="space-y-2 text-sm">
                         <div class="bg-white/10 px-3 py-1 rounded-full">React.js</div>
@@ -213,7 +240,9 @@
                 
                 <!-- Backend -->
                 <div class="glass-effect p-6 rounded-2xl hover:scale-105 transition-all duration-500 glow-border">
-                    <div class="text-4xl mb-4">⚡</div>
+                    <div class="w-16 h-16 mx-auto mb-4 glass-effect rounded-full flex items-center justify-center icon-container">
+                        <i class="fas fa-bolt text-2xl text-yellow-400"></i>
+                    </div>
                     <h3 class="text-xl font-bold mb-3 text-gradient">Backend</h3>
                     <div class="space-y-2 text-sm">
                         <div class="bg-white/10 px-3 py-1 rounded-full">Laravel</div>
@@ -225,7 +254,9 @@
                 
                 <!-- Mobile -->
                 <div class="glass-effect p-6 rounded-2xl hover:scale-105 transition-all duration-500 glow-border">
-                    <div class="text-4xl mb-4">📱</div>
+                    <div class="w-16 h-16 mx-auto mb-4 glass-effect rounded-full flex items-center justify-center icon-container">
+                        <i class="fas fa-mobile-alt text-2xl text-green-400"></i>
+                    </div>
                     <h3 class="text-xl font-bold mb-3 text-gradient">Mobile</h3>
                     <div class="space-y-2 text-sm">
                         <div class="bg-white/10 px-3 py-1 rounded-full">React Native</div>
@@ -237,7 +268,9 @@
                 
                 <!-- DevOps -->
                 <div class="glass-effect p-6 rounded-2xl hover:scale-105 transition-all duration-500 glow-border">
-                    <div class="text-4xl mb-4">🚀</div>
+                    <div class="w-16 h-16 mx-auto mb-4 glass-effect rounded-full flex items-center justify-center icon-container">
+                        <i class="fas fa-rocket text-2xl text-blue-400"></i>
+                    </div>
                     <h3 class="text-xl font-bold mb-3 text-gradient">DevOps</h3>
                     <div class="space-y-2 text-sm">
                         <div class="bg-white/10 px-3 py-1 rounded-full">Docker</div>
@@ -255,7 +288,7 @@
         <div class="max-w-7xl mx-auto px-6">
             <div class="text-center mb-16">
                 <h2 class="text-5xl md:text-6xl font-bold mb-6 text-gradient">
-                    Referanslar
+                    Projeler
                 </h2>
                 <p class="text-xl text-gray-200 max-w-3xl mx-auto">
                     Çeşitli sektörlerde başarıyla teslim ettiğimiz projelerden seçkiler.
@@ -263,80 +296,83 @@
             </div>
             
             <div class="grid lg:grid-cols-3 gap-8">
-                <!-- Project 1 -->
-                <div class="glass-effect rounded-3xl overflow-hidden hover:scale-105 transition-all duration-500 group">
-                    <div class="h-48 bg-gradient-to-br from-blue-500 to-purple-600 relative overflow-hidden">
-                        <div class="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-all duration-300"></div>
-                        <div class="absolute bottom-4 left-4 text-white">
-                            <div class="text-3xl mb-2">🌐</div>
-                            <h3 class="text-xl font-bold">E-Ticaret Platformu</h3>
+                @forelse($projects as $project)
+                    <div class="glass-effect rounded-3xl overflow-hidden hover:scale-105 transition-all duration-500 group">
+                        <div class="h-48 bg-gradient-to-br from-{{ ['blue', 'green', 'purple', 'orange', 'red', 'cyan'][array_rand(['blue', 'green', 'purple', 'orange', 'red', 'cyan'])] }}-500 to-{{ ['purple', 'emerald', 'pink', 'red', 'orange', 'teal'][array_rand(['purple', 'emerald', 'pink', 'red', 'orange', 'teal'])] }}-600 relative overflow-hidden"
+                             @if($project->image_path) style="background-image: url('{{ Storage::url($project->image_path) }}'); background-size: cover; background-position: center;" @endif>
+                            <div class="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-all duration-300"></div>
+                        </div>
+                        <div class="p-6">
+                            <div class="mb-4">
+                                <h3 class="text-xl font-bold text-gradient mb-1">{{ $project->title }}</h3>
+                                @if($project->subtitle)
+                                    <p class="text-sm text-gray-400">{{ $project->subtitle }}</p>
+                                @endif
+                            </div>
+                            <p class="text-gray-300 mb-4">
+                                {{ $project->description }}
+                            </p>
+                            <div class="flex flex-wrap gap-2 mb-4">
+                                @if(is_array($project->technologies))
+                                    @foreach($project->technologies as $tech)
+                                        <span class="bg-blue-500/20 text-blue-300 px-2 py-1 rounded text-sm">{{ $tech }}</span>
+                                    @endforeach
+                                @elseif(is_string($project->technologies))
+                                    @foreach(json_decode($project->technologies, true) ?? [] as $tech)
+                                        <span class="bg-blue-500/20 text-blue-300 px-2 py-1 rounded text-sm">{{ $tech }}</span>
+                                    @endforeach
+                                @endif
+                            </div>
+                            <div class="flex gap-2">
+                                @if($project->project_url)
+                                    <a href="{{ $project->project_url }}" target="_blank" 
+                                       class="flex-1 glass-effect py-2 rounded-lg hover:bg-white/20 transition-all duration-300 text-center text-sm">
+                                        <i class="fas fa-external-link-alt mr-1"></i> Siteyi Ziyaret Et
+                                    </a>
+                                @endif
+                                @if($project->github_url)
+                                    <a href="{{ $project->github_url }}" target="_blank" 
+                                       class="flex-1 glass-effect py-2 rounded-lg hover:bg-white/20 transition-all duration-300 text-center text-sm">
+                                        <i class="fab fa-github mr-1"></i> GitHub
+                                    </a>
+                                @endif
+                                @if(!$project->project_url && !$project->github_url)
+                                    <button class="w-full glass-effect py-2 rounded-lg hover:bg-white/20 transition-all duration-300 text-sm">
+                                        📋 Detayları Gör
+                                    </button>
+                                @endif
+                            </div>
                         </div>
                     </div>
-                    <div class="p-6">
-                        <p class="text-gray-300 mb-4">
-                            Modern React.js ve Laravel ile geliştirilmiş, 
-                            yüksek performanslı e-ticaret çözümü.
-                        </p>
-                        <div class="flex flex-wrap gap-2 mb-4">
-                            <span class="bg-blue-500/20 text-blue-300 px-2 py-1 rounded text-sm">React</span>
-                            <span class="bg-red-500/20 text-red-300 px-2 py-1 rounded text-sm">Laravel</span>
-                            <span class="bg-green-500/20 text-green-300 px-2 py-1 rounded text-sm">Tailwind</span>
+                @empty
+                    <!-- Fallback if no projects -->
+                    <div class="glass-effect rounded-3xl overflow-hidden hover:scale-105 transition-all duration-500 group">
+                        <div class="h-48 bg-gradient-to-br from-green-500 to-emerald-600 relative overflow-hidden">
+                            <div class="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-all duration-300"></div>
                         </div>
-                        <button class="w-full glass-effect py-2 rounded-lg hover:bg-white/20 transition-all duration-300">
-                            Detayları Gör
-                        </button>
-                    </div>
-                </div>
-                
-                <!-- Project 2 -->
-                <div class="glass-effect rounded-3xl overflow-hidden hover:scale-105 transition-all duration-500 group">
-                    <div class="h-48 bg-gradient-to-br from-purple-500 to-pink-600 relative overflow-hidden">
-                        <div class="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-all duration-300"></div>
-                        <div class="absolute bottom-4 left-4 text-white">
-                            <div class="text-3xl mb-2">📱</div>
-                            <h3 class="text-xl font-bold">Mobil Uygulama</h3>
-                        </div>
-                    </div>
-                    <div class="p-6">
-                        <p class="text-gray-300 mb-4">
-                            React Native ile cross-platform mobil uygulama. 
-                            iOS ve Android için optimize edildi.
-                        </p>
-                        <div class="flex flex-wrap gap-2 mb-4">
-                            <span class="bg-blue-500/20 text-blue-300 px-2 py-1 rounded text-sm">React Native</span>
-                            <span class="bg-purple-500/20 text-purple-300 px-2 py-1 rounded text-sm">TypeScript</span>
-                            <span class="bg-yellow-500/20 text-yellow-300 px-2 py-1 rounded text-sm">Firebase</span>
-                        </div>
-                        <button class="w-full glass-effect py-2 rounded-lg hover:bg:white/20 transition-all duration-300">
-                            Detayları Gör
-                        </button>
-                    </div>
-                </div>
-                
-                <!-- Project 3 -->
-                <div class="glass-effect rounded-3xl overflow-hidden hover:scale-105 transition-all duration-500 group">
-                    <div class="h-48 bg-gradient-to-br from-green-500 to-teal-600 relative overflow-hidden">
-                        <div class="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-all duration-300"></div>
-                        <div class="absolute bottom-4 left-4 text-white">
-                            <div class="text-3xl mb-2">🤖</div>
-                            <h3 class="text-xl font-bold">AI Dashboard</h3>
+                        <div class="p-6">
+                            <div class="mb-4">
+                                <h3 class="text-xl font-bold text-gradient mb-1">Adagarden Flowers</h3>
+                                <p class="text-sm text-gray-400">Çiçekçi E-Ticaret</p>
+                            </div>
+                            <p class="text-gray-300 mb-4">
+                                Sakarya'nın önde gelen çiçekçisi için geliştirilmiş modern 
+                                e-ticaret platformu. Responsive tasarım ve SEO optimizasyonu.
+                            </p>
+                            <div class="flex flex-wrap gap-2 mb-4">
+                                <span class="bg-blue-500/20 text-blue-300 px-2 py-1 rounded text-sm">HTML/CSS</span>
+                                <span class="bg-yellow-500/20 text-yellow-300 px-2 py-1 rounded text-sm">JavaScript</span>
+                                <span class="bg-green-500/20 text-green-300 px-2 py-1 rounded text-sm">SEO</span>
+                                <span class="bg-purple-500/20 text-purple-300 px-2 py-1 rounded text-sm">WhatsApp API</span>
+                            </div>
+                            <div class="flex gap-2">
+                                <a href="https://adagardenflowers.com/" target="_blank" class="flex-1 glass-effect py-2 rounded-lg hover:bg-white/20 transition-all duration-300 text-center text-sm">
+                                    <i class="fas fa-external-link-alt mr-1"></i> Siteyi Ziyaret Et
+                                </a>
+                            </div>
                         </div>
                     </div>
-                    <div class="p-6">
-                        <p class="text-gray-300 mb-4">
-                            Yapay zeka destekli analitik dashboard. 
-                            Python ve Vue.js ile geliştirildi.
-                        </p>
-                        <div class="flex flex-wrap gap-2 mb-4">
-                            <span class="bg-green-500/20 text-green-300 px-2 py-1 rounded text-sm">Vue.js</span>
-                            <span class="bg-blue-500/20 text-blue-300 px-2 py-1 rounded text-sm">Python</span>
-                            <span class="bg-orange-500/20 text-orange-300 px-2 py-1 rounded text-sm">TensorFlow</span>
-                        </div>
-                        <button class="w-full glass-effect py-2 rounded-lg hover:bg-white/20 transition-all duration-300">
-                            Detayları Gör
-                        </button>
-                    </div>
-                </div>
+                @endforelse
             </div>
         </div>
     </section>
@@ -354,27 +390,30 @@
             <div class="glass-effect p-8 rounded-3xl mb-8">
                 <div class="grid md:grid-cols-3 gap-8">
                     <div class="text-center">
-                        <div class="text-4xl mb-4">📧</div>
+                        <div class="w-16 h-16 mx-auto mb-4 glass-effect rounded-full flex items-center justify-center icon-container">
+                            <i class="fas fa-envelope text-2xl text-cyan-400"></i>
+                        </div>
                         <h3 class="text-xl font-bold mb-2 text-gradient">Email</h3>
-                        <p class="text-gray-300">frkndrbg@gmail.com</p>
+                        <p class="text-gray-300">furderyazilim@gmail.com</p>
                     </div>
                     <div class="text-center">
-                        <div class="text-4xl mb-4">📱</div>
+                        <div class="w-16 h-16 mx-auto mb-4 glass-effect rounded-full flex items-center justify-center icon-container">
+                            <i class="fas fa-phone text-2xl text-green-400"></i>
+                        </div>
                         <h3 class="text-xl font-bold mb-2 text-gradient">Telefon</h3>
                         <p class="text-gray-300">+90 542 316 54 17</p>
                     </div>
                     <div class="text-center">
-                        <div class="text-4xl mb-4">🌐</div>
+                        <div class="w-16 h-16 mx-auto mb-4 glass-effect rounded-full flex items-center justify-center icon-container">
+                            <i class="fas fa-share-alt text-2xl text-purple-400"></i>
+                        </div>
                         <h3 class="text-xl font-bold mb-2 text-gradient">Sosyal Medya</h3>
                         <div class="flex justify-center space-x-4">
-                            <a href="#" class="glass-effect w-10 h-10 rounded-full flex items-center justify-center hover:scale-110 transition-all duration-300">
-                                <span class="text-blue-400">Li</span>
+                            <a href="https://www.instagram.com/furderyazilim/" target="_blank" class="glass-effect w-12 h-12 rounded-full flex items-center justify-center hover:scale-110 transition-all duration-300 group">
+                                <i class="fab fa-instagram text-xl text-pink-400 group-hover:text-pink-300"></i>
                             </a>
-                            <a href="#" class="glass-effect w-10 h-10 rounded-full flex items-center justify-center hover:scale-110 transition-all duration-300">
-                                <span class="text-gray-400">Gh</span>
-                            </a>
-                            <a href="#" class="glass-effect w-10 h-10 rounded-full flex items-center justify-center hover:scale-110 transition-all duration-300">
-                                <span class="text-blue-400">Tw</span>
+                            <a href="https://www.linkedin.com/company/furder-yazilim-ve-teknoloji%CC%87/?viewAsMember=true" target="_blank" class="glass-effect w-12 h-12 rounded-full flex items-center justify-center hover:scale-110 transition-all duration-300 group">
+                                <i class="fab fa-linkedin-in text-xl text-blue-400 group-hover:text-blue-300"></i>
                             </a>
                         </div>
                     </div>
@@ -382,7 +421,7 @@
             </div>
             
             <button onclick="openQuoteModal()" class="glow-border glass-effect px-12 py-4 rounded-full text-xl font-semibold hover:scale-105 transition-all duration-300 animate-pulse-glow">
-🚀 Teklif Alın
+<i class="fas fa-rocket mr-2"></i>Teklif Alın
             </button>
         </div>
     </section>
@@ -393,7 +432,7 @@
             <div class="p-8">
                 <!-- Modal Header -->
                 <div class="flex items-center justify-between mb-6">
-                    <h2 class="text-3xl font-bold text-gradient">💼 Teklif Talep Formu</h2>
+                    <h2 class="text-3xl font-bold text-gradient"><i class="fas fa-briefcase mr-3"></i>Teklif Talep Formu</h2>
                     <button onclick="closeQuoteModal()" class="glass-effect w-10 h-10 rounded-full flex items-center justify-center hover:scale-110 transition-all duration-300">
                         <span class="text-xl">×</span>
                     </button>
@@ -478,7 +517,7 @@
                     <!-- Submit Button -->
                     <div class="flex flex-col sm:flex-row gap-4 pt-4">
                         <button type="submit" class="flex-1 glow-border glass-effect px-8 py-4 rounded-xl text-lg font-semibold hover:scale-105 transition-all duration-300 animate-pulse-glow">
-                            🚀 Teklif Gönder
+                            <i class="fas fa-paper-plane mr-2"></i>Teklif Gönder
                         </button>
                         <button type="button" onclick="closeQuoteModal()" class="glass-effect px-8 py-4 rounded-xl text-lg font-semibold hover:scale-105 transition-all duration-300 border border-white/30">
                             ❌ İptal
@@ -499,7 +538,7 @@
                 © 2025 Furder Yazılım ve Teknoloji Hizmetleri. Tüm hakları saklıdır.
             </p>
             <p class="text-sm text-gray-400 mt-2">
-                Hayal gücünüzle sınırlı dijital çözümler ✨
+                Hayal gücünüzle sınırlı dijital çözümler
             </p>
         </div>
     </footer>
@@ -542,6 +581,17 @@
             });
         });
 
+        // Navigation Functions
+        function scrollToProjects() {
+            const projectsSection = document.getElementById('projects');
+            if (projectsSection) {
+                projectsSection.scrollIntoView({ 
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        }
+
         // Modal Functions
         function openQuoteModal() {
             const modal = document.getElementById('quoteModal');
@@ -569,16 +619,47 @@
             
             // Get form data
             const formData = new FormData(this);
-            const data = Object.fromEntries(formData);
             
-            // Show success message
-            alert('✅ Teklif talebiniz başarıyla gönderildi! En kısa sürede size dönüş yapacağız.');
+            // Add CSRF token
+            const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
             
-            // Close modal
-            closeQuoteModal();
+            // Show loading state
+            const submitButton = this.querySelector('button[type="submit"]');
+            const originalText = submitButton.textContent;
+            submitButton.textContent = '📤 Gönderiliyor...';
+            submitButton.disabled = true;
             
-            // Here you can add actual form submission logic
-            console.log('Form Data:', data);
+            // Send to server
+            fetch('/contact', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken,
+                    'Accept': 'application/json',
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Show success message
+                    alert('✅ ' + data.message);
+                    
+                    // Reset form and close modal
+                    this.reset();
+                    closeQuoteModal();
+                } else {
+                    throw new Error(data.message || 'Bir hata oluştu');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('❌ Bir hata oluştu. Lütfen tekrar deneyin veya doğrudan iletişime geçin.');
+            })
+            .finally(() => {
+                // Reset button state
+                submitButton.textContent = originalText;
+                submitButton.disabled = false;
+            });
         });
 
         // Interactive elements
