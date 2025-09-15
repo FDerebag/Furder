@@ -1,0 +1,42 @@
+on: push
+name: 🚀 Deploy website on push
+jobs:
+  web-deploy:
+    name: 🎉 Deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🚚 Get latest code
+        uses: actions/checkout@v3 
+
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v3
+        with:  
+          node-version: '18'
+          cache: 'npm'
+
+      - name: 🔨 Build Project NPM
+        run: |
+          npm ci
+          npm run build
+
+      - name: 📂 Sync files
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+        with:
+          server: 91.241.49.75
+          username: sql_furderyazili
+          password: 1c2633870a50f8
+          server-dir: /
+          dangerous-clean-slate: false
+          exclude: |
+            **/.git*
+            **/.git*/**
+            **/node_modules/**
+            **/.env
+            **/vendor/**
+            **/storage/logs/**
+            **/storage/framework/cache/**
+            **/storage/framework/sessions/**
+            **/storage/framework/views/**
+            **/bootstrap/cache/**
+            **/.github/**
+            **/.user.ini
