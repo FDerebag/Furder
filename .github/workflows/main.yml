@@ -23,8 +23,8 @@ jobs:
         uses: SamKirkland/FTP-Deploy-Action@v4.3.4
         with:
           server: 91.241.49.75
-          username: sql_furderyazili
-          password: 1c2633870a50f8
+          username: ftp_furderyazilim	
+          password: ZiRARhyEaXFsjjfw
           server-dir: /
           dangerous-clean-slate: false
           exclude: |
