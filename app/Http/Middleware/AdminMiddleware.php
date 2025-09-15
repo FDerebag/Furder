@@ -16,7 +16,7 @@ class AdminMiddleware
     public function handle(Request $request, Closure $next): Response
     {
         if (!auth()->check()) {
-            return redirect('/login')->with('error', 'Giriş yapmanız gerekiyor.');
+            return redirect('/admin/login')->with('error', 'Giriş yapmanız gerekiyor.');
         }
         
         if (!auth()->user()->isAdmin()) {
