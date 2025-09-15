@@ -4,6 +4,16 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Furder Yazılım ve Teknoloji Hizmetleri | Kurumsal Yazılım Çözümleri</title>
+    
+    <!-- Favicon -->
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('apple-touch-icon.png') }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon-32x32.png') }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('favicon-16x16.png') }}">
+    <link rel="manifest" href="{{ asset('site.webmanifest') }}">
+    <link rel="shortcut icon" href="{{ asset('favicon.ico') }}">
+    <meta name="msapplication-TileColor" content="#0f0f23">
+    <meta name="theme-color" content="#0f0f23">
+    
     <link href="https://fonts.bunny.net/css?family=inter:300,400,500,600,700,800,900" rel="stylesheet" />
         <!-- Vite yerine direkt CSS kullanıyoruz -->
         <script src="https://cdn.tailwindcss.com"></script>
@@ -65,18 +75,38 @@
 </head>
 <body class="min-h-screen bg-gradient-animated animate-gradient text-white overflow-x-hidden">
     <!-- Navigation -->
-    <nav class="fixed top-0 left-0 right-0 z-50 glass-effect transition-all duration-300 h-28">
+    <nav class="fixed top-0 left-0 right-0 z-50 glass-effect transition-all duration-300 h-20">
         <div class="max-w-7xl mx-auto px-6 h-full">
             <div class="flex items-center justify-between h-full">
                 <div class="flex items-center">
-                    <img src="{{ asset('images/furderlogobeyaz.png') }}" alt="Furder Logo" class="h-20 md:h-24 w-auto object-contain transition-all duration-300 hover:scale-105 cursor-pointer" />
+                    <img src="{{ asset('images/furderlogobeyaz.png') }}" alt="Furder Logo" class="h-10 md:h-12 w-auto object-contain transition-all duration-300 hover:scale-105 cursor-pointer" />
                 </div>
                 <div class="hidden md:flex space-x-8">
-                    <a href="#home" class="hover:text-cyan-300 transition-colors duration-300">Ana Sayfa</a>
-                    <a href="#about" class="hover:text-orange-300 transition-colors duration-300">Hakkımızda</a>
-                    <a href="#projects" class="hover:text-yellow-300 transition-colors duration-300">Referanslar</a>
-                    <a href="#skills" class="hover:text-purple-300 transition-colors duration-300">Hizmetler</a>
-                    <a href="#contact" class="hover:text-cyan-300 transition-colors duration-300">İletişim</a>
+                    <a href="#home" class="text-lg font-medium hover:text-cyan-300 transition-colors duration-300 py-2 px-3 rounded-lg hover:bg-white/10">Ana Sayfa</a>
+                    <a href="#about" class="text-lg font-medium hover:text-orange-300 transition-colors duration-300 py-2 px-3 rounded-lg hover:bg-white/10">Hakkımızda</a>
+                    <a href="#projects" class="text-lg font-medium hover:text-yellow-300 transition-colors duration-300 py-2 px-3 rounded-lg hover:bg-white/10">Referanslar</a>
+                    <a href="#skills" class="text-lg font-medium hover:text-purple-300 transition-colors duration-300 py-2 px-3 rounded-lg hover:bg-white/10">Hizmetler</a>
+                    <a href="#contact" class="text-lg font-medium hover:text-cyan-300 transition-colors duration-300 py-2 px-3 rounded-lg hover:bg-white/10">İletişim</a>
+                </div>
+                
+                <!-- Mobile menu button -->
+                <div class="md:hidden">
+                    <button onclick="toggleMobileMenu()" class="glass-effect p-2 rounded-lg hover:bg-white/20 transition-all duration-300">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Mobile menu -->
+            <div id="mobileMenu" class="md:hidden hidden bg-black/30 backdrop-blur-sm border-t border-white/10 mt-4 pt-4">
+                <div class="flex flex-col space-y-2 px-4 pb-4">
+                    <a href="#home" class="text-lg font-medium hover:text-cyan-300 transition-colors duration-300 py-3 px-4 rounded-lg hover:bg-white/10">Ana Sayfa</a>
+                    <a href="#about" class="text-lg font-medium hover:text-orange-300 transition-colors duration-300 py-3 px-4 rounded-lg hover:bg-white/10">Hakkımızda</a>
+                    <a href="#projects" class="text-lg font-medium hover:text-yellow-300 transition-colors duration-300 py-3 px-4 rounded-lg hover:bg-white/10">Referanslar</a>
+                    <a href="#skills" class="text-lg font-medium hover:text-purple-300 transition-colors duration-300 py-3 px-4 rounded-lg hover:bg-white/10">Hizmetler</a>
+                    <a href="#contact" class="text-lg font-medium hover:text-cyan-300 transition-colors duration-300 py-3 px-4 rounded-lg hover:bg-white/10">İletişim</a>
                 </div>
             </div>
         </div>
@@ -497,6 +527,19 @@
             } else {
                 nav.style.backgroundColor = 'rgba(255, 255, 255, 0.1)';
             }
+        });
+
+        // Mobile Menu Toggle
+        function toggleMobileMenu() {
+            const mobileMenu = document.getElementById('mobileMenu');
+            mobileMenu.classList.toggle('hidden');
+        }
+
+        // Close mobile menu when clicking on a link
+        document.querySelectorAll('#mobileMenu a').forEach(link => {
+            link.addEventListener('click', function() {
+                document.getElementById('mobileMenu').classList.add('hidden');
+            });
         });
 
         // Modal Functions
