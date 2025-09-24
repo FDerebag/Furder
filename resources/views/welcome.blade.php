@@ -94,6 +94,144 @@ use Illuminate\Support\Facades\Storage;
             mask-composite: exclude;
             animation: gradient-shift 3s ease infinite;
         }
+        
+        /* Mobile Menu Styles */
+        .mobile-menu-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            z-index: 9999;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .mobile-menu-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .mobile-menu-content {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 100vh;
+            background: linear-gradient(135deg, rgba(15, 15, 35, 0.95), rgba(26, 26, 46, 0.95));
+            backdrop-filter: blur(20px);
+            border-left: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 80px 30px 30px;
+            transform: translateX(100%);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: -10px 0 30px rgba(0, 0, 0, 0.5);
+        }
+        
+        .mobile-menu-overlay.active .mobile-menu-content {
+            transform: translateX(0);
+        }
+        
+        .mobile-menu-item {
+            display: block;
+            padding: 15px 20px;
+            margin: 8px 0;
+            color: white;
+            text-decoration: none;
+            font-size: 18px;
+            font-weight: 500;
+            border-radius: 12px;
+            border: 1px solid transparent;
+            background: rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .mobile-menu-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: left 0.5s ease;
+        }
+        
+        .mobile-menu-item:hover::before {
+            left: 100%;
+        }
+        
+        .mobile-menu-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.2);
+            transform: translateX(5px);
+        }
+        
+        .mobile-menu-item i {
+            width: 20px;
+            margin-right: 12px;
+        }
+        
+        .hamburger-btn {
+            position: relative;
+            width: 30px;
+            height: 20px;
+            cursor: pointer;
+        }
+        
+        .hamburger-line {
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            background: white;
+            border-radius: 2px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .hamburger-line:nth-child(1) { top: 0; }
+        .hamburger-line:nth-child(2) { top: 50%; transform: translateY(-50%); }
+        .hamburger-line:nth-child(3) { bottom: 0; }
+        
+        .hamburger-btn.active .hamburger-line:nth-child(1) {
+            top: 50%;
+            transform: translateY(-50%) rotate(45deg);
+        }
+        
+        .hamburger-btn.active .hamburger-line:nth-child(2) {
+            opacity: 0;
+            transform: translateY(-50%) scale(0);
+        }
+        
+        .hamburger-btn.active .hamburger-line:nth-child(3) {
+            bottom: 50%;
+            transform: translateY(50%) rotate(-45deg);
+        }
+        
+        .mobile-menu-close {
+            position: absolute;
+            top: 25px;
+            right: 25px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .mobile-menu-close:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: rotate(90deg);
+        }
     </style>
 </head>
 <body class="min-h-screen bg-gradient-animated animate-gradient text-white overflow-x-hidden">
@@ -114,22 +252,65 @@ use Illuminate\Support\Facades\Storage;
                 
                 <!-- Mobile menu button -->
                 <div class="md:hidden">
-                    <button onclick="toggleMobileMenu()" class="glass-effect p-2 rounded-lg hover:bg-white/20 transition-all duration-300">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-                        </svg>
+                    <button onclick="toggleMobileMenu()" class="glass-effect p-3 rounded-lg hover:bg-white/20 transition-all duration-300">
+                        <div class="hamburger-btn" id="hamburgerBtn">
+                            <div class="hamburger-line"></div>
+                            <div class="hamburger-line"></div>
+                            <div class="hamburger-line"></div>
+                        </div>
                     </button>
                 </div>
             </div>
             
-            <!-- Mobile menu -->
-            <div id="mobileMenu" class="md:hidden hidden bg-black/30 backdrop-blur-sm border-t border-white/10 mt-4 pt-4">
-                <div class="flex flex-col space-y-2 px-4 pb-4">
-                    <a href="#home" class="text-lg font-medium hover:text-cyan-300 transition-colors duration-300 py-3 px-4 rounded-lg hover:bg-white/10">Ana Sayfa</a>
-                    <a href="#about" class="text-lg font-medium hover:text-orange-300 transition-colors duration-300 py-3 px-4 rounded-lg hover:bg-white/10">Hakkımızda</a>
-                    <a href="#projects" class="text-lg font-medium hover:text-yellow-300 transition-colors duration-300 py-3 px-4 rounded-lg hover:bg-white/10">Projeler</a>
-                    <a href="#skills" class="text-lg font-medium hover:text-purple-300 transition-colors duration-300 py-3 px-4 rounded-lg hover:bg-white/10">Hizmetler</a>
-                    <a href="#contact" class="text-lg font-medium hover:text-cyan-300 transition-colors duration-300 py-3 px-4 rounded-lg hover:bg-white/10">İletişim</a>
+            <!-- Modern Mobile Menu -->
+            <div id="mobileMenu" class="mobile-menu-overlay md:hidden">
+                <div class="mobile-menu-content">
+                    <button class="mobile-menu-close" onclick="toggleMobileMenu()">
+                        <i class="fas fa-times text-lg"></i>
+                    </button>
+                    
+                    <div class="mb-8">
+                        <div class="text-2xl font-bold text-gradient mb-2">FURDER</div>
+                        <div class="text-sm text-gray-400">Yazılım & Teknoloji</div>
+                    </div>
+                    
+                    <nav class="space-y-2">
+                        <a href="#home" class="mobile-menu-item">
+                            <i class="fas fa-home text-cyan-400"></i>
+                            Ana Sayfa
+                        </a>
+                        <a href="#about" class="mobile-menu-item">
+                            <i class="fas fa-info-circle text-orange-400"></i>
+                            Hakkımızda
+                        </a>
+                        <a href="#projects" class="mobile-menu-item">
+                            <i class="fas fa-folder-open text-yellow-400"></i>
+                            Projeler
+                        </a>
+                        <a href="#skills" class="mobile-menu-item">
+                            <i class="fas fa-cogs text-purple-400"></i>
+                            Hizmetler
+                        </a>
+                        <a href="#contact" class="mobile-menu-item">
+                            <i class="fas fa-envelope text-cyan-400"></i>
+                            İletişim
+                        </a>
+                    </nav>
+                    
+                    <div class="mt-12 pt-8 border-t border-white/10">
+                        <button onclick="openQuoteModal(); toggleMobileMenu();" class="w-full glass-effect px-6 py-3 rounded-lg text-sm font-semibold hover:bg-white/20 transition-all duration-300 border border-white/30">
+                            <i class="fas fa-briefcase mr-2"></i>Teklif Alın
+                        </button>
+                        
+                        <div class="flex justify-center space-x-4 mt-6">
+                            <a href="https://www.instagram.com/furderyazilim/" target="_blank" class="glass-effect w-10 h-10 rounded-full flex items-center justify-center hover:scale-110 transition-all duration-300 group">
+                                <i class="fab fa-instagram text-pink-400 group-hover:text-pink-300"></i>
+                            </a>
+                            <a href="https://www.linkedin.com/company/furder-yazilim-ve-teknoloji%CC%87/?viewAsMember=true" target="_blank" class="glass-effect w-10 h-10 rounded-full flex items-center justify-center hover:scale-110 transition-all duration-300 group">
+                                <i class="fab fa-linkedin-in text-blue-400 group-hover:text-blue-300"></i>
+                            </a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -155,7 +336,7 @@ use Illuminate\Support\Facades\Storage;
             </p>
             <div class="flex flex-col sm:flex-row gap-6 justify-center items-center">
                 <button onclick="scrollToProjects()" class="glow-border glass-effect px-8 py-4 rounded-full text-lg font-semibold hover:scale-105 transition-all duration-300 animate-pulse-glow">
-                    <i class="fas fa-rocket mr-2"></i>Hizmetlerimizi Keşfedin
+                    <i class="fas fa-rocket mr-2"></i>Projelerimizi Keşfedin
                 </button>
                 <button onclick="openQuoteModal()" class="glass-effect px-8 py-4 rounded-full text-lg font-semibold hover:scale-105 transition-all duration-300 border border-white/30">
                     <i class="fas fa-briefcase mr-2"></i>Teklif Alın
@@ -205,78 +386,6 @@ use Illuminate\Support\Facades\Storage;
                         <p class="text-gray-200">
                             İş hedeflerinizi hızla hayata geçiren, sürdürülebilir ve ölçümlenebilir yazılım ürünleri geliştirerek rekabet avantajı sağlamanız.
                         </p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Skills Section -->
-    <section id="skills" class="py-20 relative">
-        <div class="max-w-7xl mx-auto px-6">
-            <div class="text-center mb-16">
-                <h2 class="text-5xl md:text-6xl font-bold mb-6 text-gradient">
-                    Hizmetlerimiz
-                </h2>
-                <p class="text-xl text-gray-200 max-w-3xl mx-auto">
-                    Stratejiden ürüne; analiz, tasarım, geliştirme ve bakım aşamalarında yanınızdayız.
-                </p>
-            </div>
-            
-            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <!-- Frontend -->
-                <div class="glass-effect p-6 rounded-2xl hover:scale-105 transition-all duration-500 glow-border">
-                    <div class="w-16 h-16 mx-auto mb-4 glass-effect rounded-full flex items-center justify-center icon-container">
-                        <i class="fas fa-palette text-2xl text-pink-400"></i>
-                    </div>
-                    <h3 class="text-xl font-bold mb-3 text-gradient">Frontend</h3>
-                    <div class="space-y-2 text-sm">
-                        <div class="bg-white/10 px-3 py-1 rounded-full">React.js</div>
-                        <div class="bg-white/10 px-3 py-1 rounded-full">Vue.js</div>
-                        <div class="bg-white/10 px-3 py-1 rounded-full">Tailwind CSS</div>
-                        <div class="bg-white/10 px-3 py-1 rounded-full">TypeScript</div>
-                    </div>
-                </div>
-                
-                <!-- Backend -->
-                <div class="glass-effect p-6 rounded-2xl hover:scale-105 transition-all duration-500 glow-border">
-                    <div class="w-16 h-16 mx-auto mb-4 glass-effect rounded-full flex items-center justify-center icon-container">
-                        <i class="fas fa-bolt text-2xl text-yellow-400"></i>
-                    </div>
-                    <h3 class="text-xl font-bold mb-3 text-gradient">Backend</h3>
-                    <div class="space-y-2 text-sm">
-                        <div class="bg-white/10 px-3 py-1 rounded-full">Laravel</div>
-                        <div class="bg-white/10 px-3 py-1 rounded-full">Node.js</div>
-                        <div class="bg-white/10 px-3 py-1 rounded-full">Python</div>
-                        <div class="bg-white/10 px-3 py-1 rounded-full">PostgreSQL</div>
-                    </div>
-                </div>
-                
-                <!-- Mobile -->
-                <div class="glass-effect p-6 rounded-2xl hover:scale-105 transition-all duration-500 glow-border">
-                    <div class="w-16 h-16 mx-auto mb-4 glass-effect rounded-full flex items-center justify-center icon-container">
-                        <i class="fas fa-mobile-alt text-2xl text-green-400"></i>
-                    </div>
-                    <h3 class="text-xl font-bold mb-3 text-gradient">Mobile</h3>
-                    <div class="space-y-2 text-sm">
-                        <div class="bg-white/10 px-3 py-1 rounded-full">React Native</div>
-                        <div class="bg-white/10 px-3 py-1 rounded-full">Flutter</div>
-                        <div class="bg-white/10 px-3 py-1 rounded-full">iOS</div>
-                        <div class="bg-white/10 px-3 py-1 rounded-full">Android</div>
-                    </div>
-                </div>
-                
-                <!-- DevOps -->
-                <div class="glass-effect p-6 rounded-2xl hover:scale-105 transition-all duration-500 glow-border">
-                    <div class="w-16 h-16 mx-auto mb-4 glass-effect rounded-full flex items-center justify-center icon-container">
-                        <i class="fas fa-rocket text-2xl text-blue-400"></i>
-                    </div>
-                    <h3 class="text-xl font-bold mb-3 text-gradient">DevOps</h3>
-                    <div class="space-y-2 text-sm">
-                        <div class="bg-white/10 px-3 py-1 rounded-full">Docker</div>
-                        <div class="bg-white/10 px-3 py-1 rounded-full">AWS</div>
-                        <div class="bg-white/10 px-3 py-1 rounded-full">CI/CD</div>
-                        <div class="bg-white/10 px-3 py-1 rounded-full">Kubernetes</div>
                     </div>
                 </div>
             </div>
@@ -373,6 +482,78 @@ use Illuminate\Support\Facades\Storage;
                         </div>
                     </div>
                 @endforelse
+            </div>
+        </div>
+    </section>
+
+    <!-- Skills Section -->
+    <section id="skills" class="py-20 relative">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-5xl md:text-6xl font-bold mb-6 text-gradient">
+                    Hizmetlerimiz
+                </h2>
+                <p class="text-xl text-gray-200 max-w-3xl mx-auto">
+                    Stratejiden ürüne; analiz, tasarım, geliştirme ve bakım aşamalarında yanınızdayız.
+                </p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Frontend -->
+                <div class="glass-effect p-6 rounded-2xl hover:scale-105 transition-all duration-500 glow-border">
+                    <div class="w-16 h-16 mx-auto mb-4 glass-effect rounded-full flex items-center justify-center icon-container">
+                        <i class="fas fa-palette text-2xl text-pink-400"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3 text-gradient">Frontend</h3>
+                    <div class="space-y-2 text-sm">
+                        <div class="bg-white/10 px-3 py-1 rounded-full">React.js</div>
+                        <div class="bg-white/10 px-3 py-1 rounded-full">Vue.js</div>
+                        <div class="bg-white/10 px-3 py-1 rounded-full">Tailwind CSS</div>
+                        <div class="bg-white/10 px-3 py-1 rounded-full">TypeScript</div>
+                    </div>
+                </div>
+                
+                <!-- Backend -->
+                <div class="glass-effect p-6 rounded-2xl hover:scale-105 transition-all duration-500 glow-border">
+                    <div class="w-16 h-16 mx-auto mb-4 glass-effect rounded-full flex items-center justify-center icon-container">
+                        <i class="fas fa-bolt text-2xl text-yellow-400"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3 text-gradient">Backend</h3>
+                    <div class="space-y-2 text-sm">
+                        <div class="bg-white/10 px-3 py-1 rounded-full">Laravel</div>
+                        <div class="bg-white/10 px-3 py-1 rounded-full">Node.js</div>
+                        <div class="bg-white/10 px-3 py-1 rounded-full">Python</div>
+                        <div class="bg-white/10 px-3 py-1 rounded-full">PostgreSQL</div>
+                    </div>
+                </div>
+                
+                <!-- Mobile -->
+                <div class="glass-effect p-6 rounded-2xl hover:scale-105 transition-all duration-500 glow-border">
+                    <div class="w-16 h-16 mx-auto mb-4 glass-effect rounded-full flex items-center justify-center icon-container">
+                        <i class="fas fa-mobile-alt text-2xl text-green-400"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3 text-gradient">Mobile</h3>
+                    <div class="space-y-2 text-sm">
+                        <div class="bg-white/10 px-3 py-1 rounded-full">React Native</div>
+                        <div class="bg-white/10 px-3 py-1 rounded-full">Flutter</div>
+                        <div class="bg-white/10 px-3 py-1 rounded-full">iOS</div>
+                        <div class="bg-white/10 px-3 py-1 rounded-full">Android</div>
+                    </div>
+                </div>
+                
+                <!-- DevOps -->
+                <div class="glass-effect p-6 rounded-2xl hover:scale-105 transition-all duration-500 glow-border">
+                    <div class="w-16 h-16 mx-auto mb-4 glass-effect rounded-full flex items-center justify-center icon-container">
+                        <i class="fas fa-rocket text-2xl text-blue-400"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3 text-gradient">DevOps</h3>
+                    <div class="space-y-2 text-sm">
+                        <div class="bg-white/10 px-3 py-1 rounded-full">Docker</div>
+                        <div class="bg-white/10 px-3 py-1 rounded-full">AWS</div>
+                        <div class="bg-white/10 px-3 py-1 rounded-full">CI/CD</div>
+                        <div class="bg-white/10 px-3 py-1 rounded-full">Kubernetes</div>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
@@ -571,13 +752,41 @@ use Illuminate\Support\Facades\Storage;
         // Mobile Menu Toggle
         function toggleMobileMenu() {
             const mobileMenu = document.getElementById('mobileMenu');
-            mobileMenu.classList.toggle('hidden');
+            const hamburgerBtn = document.getElementById('hamburgerBtn');
+            
+            mobileMenu.classList.toggle('active');
+            hamburgerBtn.classList.toggle('active');
+            
+            // Prevent body scrolling when menu is open
+            if (mobileMenu.classList.contains('active')) {
+                document.body.style.overflow = 'hidden';
+            } else {
+                document.body.style.overflow = 'auto';
+            }
         }
 
-        // Close mobile menu when clicking on a link
-        document.querySelectorAll('#mobileMenu a').forEach(link => {
-            link.addEventListener('click', function() {
-                document.getElementById('mobileMenu').classList.add('hidden');
+        // Close mobile menu when clicking on overlay
+        document.addEventListener('DOMContentLoaded', function() {
+            const mobileMenu = document.getElementById('mobileMenu');
+            
+            mobileMenu.addEventListener('click', function(e) {
+                if (e.target === mobileMenu) {
+                    toggleMobileMenu();
+                }
+            });
+            
+            // Close mobile menu when clicking on a link
+            document.querySelectorAll('.mobile-menu-item').forEach(link => {
+                link.addEventListener('click', function() {
+                    toggleMobileMenu();
+                });
+            });
+            
+            // Close menu on escape key
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && mobileMenu.classList.contains('active')) {
+                    toggleMobileMenu();
+                }
             });
         });
 
